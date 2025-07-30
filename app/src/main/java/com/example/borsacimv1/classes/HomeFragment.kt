@@ -11,14 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.borsacimv1.R
 import com.example.borsacimv1.adapter.StockAdapter
+import com.example.borsacimv1.data.StockItem
+import com.example.borsacimv1.data.SymbolResponse
 import com.example.borsacimv1.data.toStockItem
 import com.example.borsacimv1.retro.RetrofitInstance
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class HomeFragment : Fragment() {
 
@@ -34,10 +31,7 @@ class HomeFragment : Fragment() {
 
     private val apiKey = "d24h24hr01qu2jgi8n5gd24h24hr01qu2jgi8n60"
 
-    // Örnek sembol listeleri (bunları istediğin gibi değiştirebilirsin)
-    private val topGainersSymbols = listOf("AAPL", "NVDA", "MSFT", "AMZN", "META")
-    private val topLosersSymbols = listOf("TSLA", "NFLX", "BABA", "INTC", "PYPL")
-    private val popularSymbols = listOf("GOOGL", "AMD", "UBER", "DIS", "SONY")
+    private var allStockList: List<StockItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +39,6 @@ class HomeFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Butonları tanımla
         btnTopGain = view.findViewById(R.id.btnTopGainers)
         btnTopLos = view.findViewById(R.id.btnTopLosers)
         btnTopPop = view.findViewById(R.id.btnPopular)
@@ -53,35 +46,33 @@ class HomeFragment : Fragment() {
 
         buttonList = listOf(btnTopGain, btnTopLos, btnTopPop, btnTopFav)
 
-        // RecyclerView ve Adapter
         stockRecyclerView = view.findViewById(R.id.stockRecyclerView)
         stockRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         stockAdapter = StockAdapter(emptyList())
         stockRecyclerView.adapter = stockAdapter
 
-        // Varsayılan seçim
         selectButton(btnTopGain)
-        loadStocks(topGainersSymbols)
+        loadAllStocks()
 
-        // Buton click
         buttonList.forEach { button ->
             button.setOnClickListener {
                 selectButton(button)
-
                 when (button.id) {
-                    R.id.btnTopGainers -> loadStocks(topGainersSymbols)
-                    R.id.btnTopLosers -> loadStocks(topLosersSymbols)
-                    R.id.btnPopular -> loadStocks(popularSymbols)
+                    R.id.btnTopGainers -> loadTopGainers()
+                    R.id.btnTopLosers -> loadTopLosers()
+                    R.id.btnPopular -> loadPopularStocks()
                     R.id.btnFav -> loadFavorites()
                 }
             }
         }
 
-        // Arama
         val searchView = view.findViewById<SearchView>(R.id.searchView)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = true
-            override fun onQueryTextChange(newText: String?): Boolean = true
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterStocks(newText)
+                return true
+            }
         })
 
         return view
@@ -92,19 +83,61 @@ class HomeFragment : Fragment() {
         selectedButton.isSelected = true
     }
 
-    private fun loadStocks(symbols: List<String>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val stockList = symbols.map { symbol ->
-                    async {
-                        val response = RetrofitInstance.api.getQuote(symbol, apiKey)
-                        response.toStockItem(symbol)
+    // Yeni: Sembolleri partiler halinde çekmek için fonksiyon
+    private suspend fun fetchQuotesInBatches(symbols: List<String>, batchSize: Int = 10): List<StockItem> {
+        val result = mutableListOf<StockItem>()
+        for (i in symbols.indices step batchSize) {
+            val batch = symbols.subList(i, minOf(i + batchSize, symbols.size))
+            val batchStocks = coroutineScope {
+                batch.map { symbol ->
+                    async(Dispatchers.IO) {
+                        val quote = RetrofitInstance.api.getQuote(symbol, apiKey)
+                        quote.toStockItem(symbol)
                     }
                 }.awaitAll()
+            }
+            result.addAll(batchStocks)
+            delay(1000) // 1 saniye bekle, istek hızını düşürmek için
+        }
+        return result
+    }
 
-                withContext(Dispatchers.Main) {
-                    stockAdapter.updateList(stockList)
-                }
+    private fun loadAllStocks() {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val symbolsResponse: List<SymbolResponse> = RetrofitInstance.api.getAllSymbols(token = apiKey)
+                val symbols = symbolsResponse.map { it.symbol }.take(100)
+
+                val stockList = fetchQuotesInBatches(symbols)
+
+                allStockList = stockList
+                stockAdapter.updateList(stockList)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun loadTopGainers() {
+        val topGainers = allStockList.sortedByDescending { it.percentChange }.take(10)
+        stockAdapter.updateList(topGainers)
+    }
+
+    private fun loadTopLosers() {
+        val topLosers = allStockList.sortedBy { it.percentChange }.take(10)
+        stockAdapter.updateList(topLosers)
+    }
+
+    private fun loadPopularStocks() {
+        val popularSymbols = listOf("AAPL", "GOOGL", "AMZN", "MSFT", "TSLA")
+        loadStocks(popularSymbols)
+    }
+
+    private fun loadStocks(symbols: List<String>) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val stockList = fetchQuotesInBatches(symbols)
+                stockAdapter.updateList(stockList)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -112,7 +145,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadFavorites() {
-        // Şu anlık boş favori listesi
-        stockAdapter.updateList(listOf())
+        stockAdapter.updateList(emptyList()) // Şimdilik boş
+    }
+
+    private fun filterStocks(query: String?) {
+        if (query.isNullOrBlank()) {
+            stockAdapter.updateList(allStockList)
+            return
+        }
+
+        val filtered = allStockList.filter {
+            it.symbol.contains(query, ignoreCase = true)
+        }
+        stockAdapter.updateList(filtered)
     }
 }
