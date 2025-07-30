@@ -30,12 +30,13 @@
 
         <SearchView
             android:id="@+id/searchView"
-            android:layout_width="162dp"
+            android:layout_width="220dp"
             android:layout_height="match_parent"
             android:queryHint="Hisse ara"
             android:layout_gravity="center"
             android:background="@drawable/search_bg"
             android:iconifiedByDefault="false"
+            android:focusable="false"
             android:layout_margin="12dp"/>
 
         <ImageView
@@ -44,12 +45,7 @@
             android:src="@drawable/notif_icon"
             android:layout_gravity="center" />
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/assistan_icon"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"/>
+
     </LinearLayout>
 
     <!-- Kategori Butonları -->
@@ -78,6 +74,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
                 android:background="@drawable/tab_button_selector"
+                android:stateListAnimator="@animator/button_elevation_animator"
                 android:textColor="@android:color/white"
                 android:layout_marginEnd="8dp"/>
 

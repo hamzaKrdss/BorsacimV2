@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Zaten varsa dokunma -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Varsayılan tema ayarları -->
+    </style>
+
+    <style name="DarkStockCategoryButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">#E0E0E0</item>
+        <item name="android:backgroundTint">#2C2C2C</item>
+        <item name="strokeColor">#444444</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
+    </style>
+
+
+</resources>

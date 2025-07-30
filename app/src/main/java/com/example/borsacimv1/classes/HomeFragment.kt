@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -45,27 +46,14 @@ class HomeFragment : Fragment() {
         btnTopFav = view.findViewById(R.id.btnFav)
 
         buttonList = listOf(btnTopGain, btnTopLos, btnTopPop, btnTopFav)
+        val buttons = listOf(btnTopGain, btnTopLos, btnTopPop, btnTopFav)
+
+
 
         stockRecyclerView = view.findViewById(R.id.stockRecyclerView)
         stockRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         stockAdapter = StockAdapter(emptyList())
         stockRecyclerView.adapter = stockAdapter
-
-        selectButton(btnTopGain)
-        loadAllStocks()
-
-        buttonList.forEach { button ->
-            button.setOnClickListener {
-                selectButton(button)
-                when (button.id) {
-                    R.id.btnTopGainers -> loadTopGainers()
-                    R.id.btnTopLosers -> loadTopLosers()
-                    R.id.btnPopular -> loadPopularStocks()
-                    R.id.btnFav -> loadFavorites()
-                }
-            }
-        }
-
         val searchView = view.findViewById<SearchView>(R.id.searchView)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = true
@@ -75,6 +63,28 @@ class HomeFragment : Fragment() {
             }
         })
 
+        searchView.clearFocus()
+
+        selectButton(btnTopGain)
+        loadAllStocks()
+
+        buttonList.forEach { button ->
+            button.setOnClickListener {
+                selectButton(button)
+                val anim = AnimationUtils.loadAnimation(context, R.anim.button_click)
+                button.startAnimation(anim)
+                when (button.id) {
+                    R.id.btnTopGainers -> loadTopGainers()
+                    R.id.btnTopLosers -> loadTopLosers()
+                    R.id.btnPopular -> loadPopularStocks()
+                    R.id.btnFav -> loadFavorites()
+                }
+            }
+        }
+
+
+
+
         return view
     }
 
@@ -83,8 +93,7 @@ class HomeFragment : Fragment() {
         selectedButton.isSelected = true
     }
 
-    // Yeni: Sembolleri partiler halinde çekmek için fonksiyon
-    private suspend fun fetchQuotesInBatches(symbols: List<String>, batchSize: Int = 10): List<StockItem> {
+    private suspend fun fetchQuotesInBatches(symbols: List<String>, batchSize: Int = 5): List<StockItem> {
         val result = mutableListOf<StockItem>()
         for (i in symbols.indices step batchSize) {
             val batch = symbols.subList(i, minOf(i + batchSize, symbols.size))
@@ -97,19 +106,20 @@ class HomeFragment : Fragment() {
                 }.awaitAll()
             }
             result.addAll(batchStocks)
-            delay(1000) // 1 saniye bekle, istek hızını düşürmek için
+            delay(2000) // 2 saniye bekle (istek hızını düşürmek için)
         }
         return result
     }
 
+
     private fun loadAllStocks() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
+                // Tüm sembolleri çekiyoruz
                 val symbolsResponse: List<SymbolResponse> = RetrofitInstance.api.getAllSymbols(token = apiKey)
-                val symbols = symbolsResponse.map { it.symbol }.take(100)
+                val symbols = symbolsResponse.map { it.symbol }.take(100)  // ilk 100 sembol
 
                 val stockList = fetchQuotesInBatches(symbols)
-
                 allStockList = stockList
                 stockAdapter.updateList(stockList)
             } catch (e: Exception) {
@@ -118,19 +128,29 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // En çok yükselen 10 hisseyi getirir
     private fun loadTopGainers() {
-        val topGainers = allStockList.sortedByDescending { it.percentChange }.take(10)
+        val topGainers = allStockList
+            .filter { it.percentChange != null }
+            .sortedByDescending { it.percentChange }
+            .take(10)
         stockAdapter.updateList(topGainers)
     }
 
+    // En çok düşen 10 hisseyi getirir
     private fun loadTopLosers() {
-        val topLosers = allStockList.sortedBy { it.percentChange }.take(10)
+        val topLosers = allStockList
+            .filter { it.percentChange != null }
+            .sortedBy { it.percentChange }
+            .take(10)
         stockAdapter.updateList(topLosers)
     }
 
+    // Popüler 10 hisseyi göster (elle belirlenmiş)
     private fun loadPopularStocks() {
-        val popularSymbols = listOf("AAPL", "GOOGL", "AMZN", "MSFT", "TSLA")
-        loadStocks(popularSymbols)
+        val popularSymbols = listOf("AAPL", "GOOGL", "AMZN", "MSFT", "TSLA", "META", "NVDA", "NFLX", "BABA", "DIS")
+        val popularStocks = allStockList.filter { it.symbol in popularSymbols }
+        stockAdapter.updateList(popularStocks.take(10))
     }
 
     private fun loadStocks(symbols: List<String>) {
@@ -153,7 +173,6 @@ class HomeFragment : Fragment() {
             stockAdapter.updateList(allStockList)
             return
         }
-
         val filtered = allStockList.filter {
             it.symbol.contains(query, ignoreCase = true)
         }
