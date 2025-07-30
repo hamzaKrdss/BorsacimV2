@@ -1,22 +1,18 @@
 package com.example.borsacimv1.classes
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AnimationUtils
+import android.view.*
 import android.widget.Button
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-
 import com.example.borsacimv1.R
+import android.view.animation.AnimationUtils
 
 class HomeFragment : Fragment() {
 
-    private lateinit var btnTopGain: Button
-    private lateinit var btnTopLos: Button
-    private lateinit var btnTopPop: Button
-    private lateinit var btnTopFav: Button
+    private lateinit var dailyShare: Button
+    private lateinit var weekShare: Button
+    private lateinit var monthShare: Button
 
     private lateinit var buttonList: List<Button>
 
@@ -26,30 +22,27 @@ class HomeFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        btnTopGain = view.findViewById(R.id.btnTopGainers)
-        btnTopLos = view.findViewById(R.id.btnTopLosers)
-        btnTopPop = view.findViewById(R.id.btnPopular)
-        btnTopFav = view.findViewById(R.id.btnFav)
+        dailyShare = view.findViewById(R.id.dailShare)
+        weekShare = view.findViewById(R.id.weekShare)
+        monthShare = view.findViewById(R.id.monthShare)
 
-        buttonList = listOf(btnTopGain, btnTopLos, btnTopPop, btnTopFav)
+        buttonList = listOf(dailyShare, weekShare, monthShare)
 
         val searchView = view.findViewById<SearchView>(R.id.searchView)
-        // Eğer arama işlevi varsa, burada yazabilirsin. Şimdilik boş bırakıyorum.
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?) = true
             override fun onQueryTextChange(newText: String?) = true
         })
-
         searchView.clearFocus()
 
-        selectButton(btnTopGain)
+        selectButton(dailyShare)
 
         buttonList.forEach { button ->
             button.setOnClickListener {
                 selectButton(button)
                 val anim = AnimationUtils.loadAnimation(context, R.anim.button_click)
                 button.startAnimation(anim)
-                // Burada buton tıklamalarına göre yapılacak işlemler şimdilik yok
+                // Şimdilik buton tıklama işleminde başka bir şey yok
             }
         }
 
