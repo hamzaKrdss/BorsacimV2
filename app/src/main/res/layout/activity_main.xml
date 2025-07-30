@@ -18,7 +18,6 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_margin="12dp"
         android:background="@drawable/bottom_nav_capsule"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/nav_icon_color"
