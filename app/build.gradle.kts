@@ -47,6 +47,23 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3") // Log için isteğe bağlı
     implementation ("androidx.cardview:cardview:1.0.0")
+
+    implementation ("io.ktor:ktor-client-core:2.3.4")
+
+    // Ktor Client CIO engine
+    implementation ("io.ktor:ktor-client-cio:2.3.4")
+
+    // Ktor Client JSON
+    implementation ("io.ktor:ktor-client-content-negotiation:2.3.4")
+    implementation ("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+
+    // Kotlinx serialization json
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // Coroutines (Zaten varsa eklemene gerek yok)
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

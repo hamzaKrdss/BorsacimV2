@@ -116,7 +116,7 @@ class PodcastFragment : Fragment() {
                         mediaPlayer = null
                     }
                     setOnErrorListener { _, _, _ ->
-                        Toast.makeText(requireContext(), "🎧 Podcast henüz hazır değil", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "🎧 Podcast henüz hazır değil \n\t\t\t\t\t 08:00 da yayınlanacak", Toast.LENGTH_SHORT).show()
                         playPauseButton.setImageResource(R.drawable.ic_play)
                         release()
                         mediaPlayer = null

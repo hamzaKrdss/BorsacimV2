@@ -108,7 +108,7 @@
     </HorizontalScrollView>
 
     <TextView
-        android:id="@+id/dailyTask"
+        android:id="@+id/ShareTask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Günlük"
@@ -123,27 +123,113 @@
         android:layout_marginEnd="90dp"
         app:layout_constraintTop_toBottomOf="@+id/contentPanel"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="56dp"
-        app:layout_constraintTop_toBottomOf="@+id/dailyTask"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/stockRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
+        <ScrollView
+            android:id="@+id/stockTableScroll"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="25dp"
+            android:background="#FFFFFF"
+            app:layout_constraintTop_toBottomOf="@+id/ShareTask"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TableLayout
+                android:id="@+id/stockTableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:background="#FFFFFF"
+                android:padding="12dp">
+
+                <!-- Başlık Satırı -->
+                <TableRow android:id="@+id/headerRow" android:background="#F2F2F2" android:padding="8dp">
+                    <TextView android:text="Hisse" android:textStyle="bold" android:textColor="#000000" android:padding="8dp" android:textSize="14sp" />
+                    <TextView android:text="Güncel" android:textStyle="bold" android:textColor="#000000" android:padding="8dp" android:textSize="14sp" />
+                    <TextView android:text="Tahmini" android:textStyle="bold" android:textColor="#000000" android:padding="8dp" android:textSize="14sp" />
+                    <TextView android:text="Ortalama" android:textStyle="bold" android:textColor="#000000" android:padding="8dp" android:textSize="14sp" />
+                </TableRow>
+
+                <!-- 10 Boş Satır -->
+                <!-- Arka plan dönüşümlü: FAFAFA, EFEFEF -->
+                <TableRow android:id="@+id/row_1" android:background="#FAFAFA" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_1" android:text="Hisse 1" android:textColor="#333" android:padding="8dp" android:textSize="13sp"/>
+                    <TextView android:id="@+id/stock_current_1" android:text="-" android:textColor="#333" android:padding="8dp" android:textSize="13sp"/>
+                    <TextView android:id="@+id/stock_predicted_1" android:text="-" android:textColor="#007E33" android:padding="8dp" android:textSize="13sp"/>
+                    <TextView android:id="@+id/stock_average_1" android:text="-" android:textColor="#333" android:padding="8dp" android:textSize="13sp"/>
+                </TableRow>
+
+                <TableRow android:id="@+id/row_2" android:background="#EFEFEF" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_2" android:text="Hisse 2" />
+                    <TextView android:id="@+id/stock_current_2" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_2" android:text="-" />
+                    <TextView android:id="@+id/stock_average_2" android:text="-" />
+                </TableRow>
+
+                <!-- Aynı şekilde 3-10 -->
+                <TableRow android:id="@+id/row_3" android:background="#FAFAFA" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_3" android:text="Hisse 3" />
+                    <TextView android:id="@+id/stock_current_3" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_3" android:text="-"/>
+                    <TextView android:id="@+id/stock_average_3" android:text="-" />
+                </TableRow>
+
+                <TableRow android:id="@+id/row_4" android:background="#EFEFEF" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_4" android:text="Hisse 4" />
+                    <TextView android:id="@+id/stock_current_4" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_4" android:text="-" />
+                    <TextView android:id="@+id/stock_average_4" android:text="-" />
+                </TableRow>
+
+                <!-- Devam... -->
+                <TableRow android:id="@+id/row_5" android:background="#FAFAFA" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_5" android:text="Hisse 5" />
+                    <TextView android:id="@+id/stock_current_5" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_5" android:text="-" />
+                    <TextView android:id="@+id/stock_average_5" android:text="-" />
+                </TableRow>
+
+                <TableRow android:id="@+id/row_6" android:background="#EFEFEF" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_6" android:text="Hisse 6" />
+                    <TextView android:id="@+id/stock_current_6" android:text="-"  />
+                    <TextView android:id="@+id/stock_predicted_6" android:text="-" />
+                    <TextView android:id="@+id/stock_average_6" android:text="-" />
+                </TableRow>
+
+                <TableRow android:id="@+id/row_7" android:background="#FAFAFA" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_7" android:text="Hisse 7" />
+                    <TextView android:id="@+id/stock_current_7" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_7" android:text="-" />
+                    <TextView android:id="@+id/stock_average_7" android:text="-" />
+                </TableRow>
+
+                <TableRow android:id="@+id/row_8" android:background="#EFEFEF" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_8" android:text="Hisse 8" />
+                    <TextView android:id="@+id/stock_current_8" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_8" android:text="-" />
+                    <TextView android:id="@+id/stock_average_8" android:text="-" />
+                </TableRow>
+
+                <TableRow android:id="@+id/row_9" android:background="#FAFAFA" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_9" android:text="Hisse 9" />
+                    <TextView android:id="@+id/stock_current_9" android:text="-" />
+                    <TextView android:id="@+id/stock_predicted_9" android:text="-" />
+                    <TextView android:id="@+id/stock_average_9" android:text="-" />
+                </TableRow>
+
+                <TableRow android:id="@+id/row_10" android:background="#EFEFEF" android:padding="8dp">
+                    <TextView android:id="@+id/stock_name_10" android:text="Hisse 10" />
+                    <TextView android:id="@+id/stock_current_10" android:text="-"  />
+                    <TextView android:id="@+id/stock_predicted_10" android:text="-" />
+                    <TextView android:id="@+id/stock_average_10" android:text="-" />
+                </TableRow>
+
+            </TableLayout>
 
 
-    </ScrollView>
+        </ScrollView>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
