@@ -16,14 +16,19 @@ import com.example.borsacimv1.R
 import com.example.borsacimv1.classes.adapter.StockAdapter
 import com.example.borsacimv1.data.objects.RetrofitClient
 import com.example.borsacimv1.data.objects.local.GlobalStockList
+import com.github.mikephil.charting.charts.CandleStickChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.CandleData
+import com.github.mikephil.charting.data.CandleDataSet
+import com.github.mikephil.charting.data.CandleEntry
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 class AnalysisFragment : Fragment() {
 
-    private val API_KEY = "d268q9pr01qh25lmbgvgd268q9pr01qh25lmbh00" // Kendi API anahtarını buraya koy
+    private val API_KEY = "d268q9pr01qh25lmbgvgd268q9pr01qh25lmbh00" // API anahtarın
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
@@ -33,6 +38,8 @@ class AnalysisFragment : Fragment() {
     private lateinit var stockChange: TextView
     private lateinit var stockHigh: TextView
     private lateinit var stockLow: TextView
+
+    private lateinit var candleStickChart: CandleStickChart
 
     private var searchJob: Job? = null
     private var adapter: StockAdapter? = null
@@ -51,6 +58,7 @@ class AnalysisFragment : Fragment() {
         stockChange = view.findViewById(R.id.stockChange)
         stockHigh = view.findViewById(R.id.stockHigh)
         stockLow = view.findViewById(R.id.stockLow)
+        candleStickChart = view.findViewById(R.id.candleStickChart)
 
         // SearchView içindeki EditText'i bulup yazı rengini ve hint rengini ayarla
         val searchEditText = findSearchEditText(searchView)
@@ -159,6 +167,9 @@ class AnalysisFragment : Fragment() {
                     stockChange.setTextColor(
                         if (change >= 0) Color.GREEN else Color.RED
                     )
+
+                    // Dummy mum grafiğini göster (sonraki adımda gerçek veriye geçilecek)
+                    showDummyCandleChart()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -174,4 +185,44 @@ class AnalysisFragment : Fragment() {
         }
     }
 
+    // Örnek mum grafiği verisi
+    private fun showDummyCandleChart() {
+        val entries = listOf(
+            CandleEntry(0f, 130f, 120f, 125f, 123f),
+            CandleEntry(1f, 132f, 121f, 131f, 128f),
+            CandleEntry(2f, 135f, 130f, 134f, 132f),
+            CandleEntry(3f, 133f, 127f, 130f, 129f),
+            CandleEntry(4f, 137f, 131f, 136f, 134f),
+            CandleEntry(5f, 139f, 133f, 138f, 135f),
+            CandleEntry(6f, 140f, 134f, 139f, 137f)
+        )
+
+        val dataSet = CandleDataSet(entries, "Mum Grafiği")
+        dataSet.color = Color.rgb(80, 80, 80)
+        dataSet.shadowColor = Color.DKGRAY
+        dataSet.shadowWidth = 1f
+        dataSet.decreasingColor = Color.RED
+        dataSet.decreasingPaintStyle = android.graphics.Paint.Style.FILL
+        dataSet.increasingColor = Color.GREEN
+        dataSet.increasingPaintStyle = android.graphics.Paint.Style.FILL
+        dataSet.neutralColor = Color.BLUE
+        dataSet.setDrawValues(false)
+
+        val data = CandleData(dataSet)
+        candleStickChart.data = data
+
+        // Grafik ayarları
+        candleStickChart.axisRight.isEnabled = false
+        candleStickChart.description.isEnabled = false
+        candleStickChart.setBackgroundColor(Color.TRANSPARENT)
+
+        val xAxis = candleStickChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+
+        val yAxisLeft = candleStickChart.axisLeft
+        yAxisLeft.setDrawGridLines(false)
+
+        candleStickChart.invalidate() // Grafiği yenile
+    }
 }

@@ -3,8 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#393352">
+    android:layout_height="match_parent">
+
+    <!-- Arka plan degrade -->
+    <View
+        android:id="@+id/backgroundGradient"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_gradient"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <LinearLayout
         android:id="@+id/searchContainer"
@@ -15,33 +25,41 @@
         android:layout_marginTop="36dp"
         android:orientation="horizontal"
         android:background="@drawable/top_nav_menu"
+        android:elevation="4dp"
+        android:paddingHorizontal="8dp"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
             android:id="@+id/icon_img"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
+            android:contentDescription="Logo"
             android:src="@drawable/logo_icon" />
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:outlineAmbientShadowColor="@color/white"
-            android:layout_gravity="center"
             android:background="@drawable/search_bg"
-            android:outlineSpotShadowColor="@color/white"
             android:iconifiedByDefault="false"
-            android:queryHint="Hisse ara" />
+            android:queryHint="Hisse ara"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#B0B0B0" />
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/notif_icon"
+            android:contentDescription="Bildirim"
             android:layout_gravity="center" />
 
     </LinearLayout>
@@ -50,11 +68,14 @@
         android:id="@+id/stockRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#22000000"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/searchContainer"
         app:layout_constraintBottom_toTopOf="@id/stockDetailContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clipToPadding="false"
+        android:padding="8dp" />
 
     <LinearLayout
         android:id="@+id/stockDetailContainer"
@@ -62,7 +83,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
-        android:padding="16dp"
+        android:background="@drawable/bg_rounded_corners"
+        android:padding="24dp"
+        android:layout_margin="16dp"
+        android:elevation="8dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -73,24 +98,27 @@
             android:layout_height="wrap_content"
             android:text="Hisse Adı"
             android:textColor="#FFFFFF"
-            android:textSize="24sp" />
+            android:textSize="26sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/stockPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fiyat"
-            android:textColor="#AAAAAA"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
+            android:textColor="#DDDDDD"
+            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/stockChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Değişim"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp" />
+            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/stockHigh"
@@ -98,7 +126,7 @@
             android:layout_height="wrap_content"
             android:text="Günlük Yüksek"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="#CCCCCC"
             android:layout_marginTop="8dp" />
 
         <TextView
@@ -107,10 +135,24 @@
             android:layout_height="wrap_content"
             android:text="Günlük Düşük"
             android:textSize="18sp"
-            android:textColor="@color/white"
+            android:textColor="#CCCCCC"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fiyat Hareketleri"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <com.github.mikephil.charting.charts.CandleStickChart
+            android:id="@+id/candleStickChart"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
             android:layout_marginTop="8dp" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

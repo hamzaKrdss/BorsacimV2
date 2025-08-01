@@ -47,7 +47,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3") // Log için isteğe bağlı
     implementation ("androidx.cardview:cardview:1.0.0")
-
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation ("io.ktor:ktor-client-core:2.3.4")
 
     // Ktor Client CIO engine

@@ -13,7 +13,7 @@ import com.google.gson.Gson
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import com.example.borsacimv1.data.entity.StockAnalysis
+import com.example.borsacimv1.data.entity.StockAnalysisGit
 
 
 
@@ -105,10 +105,7 @@ class HomeFragment : Fragment() {
                 "gunluk-${sdf.format(calendar.time)}"
             }
             "haftalik" -> {
-                // Haftanın Pazartesi gününe ayarla
-                while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                    calendar.add(Calendar.DATE, -1)
-                }
+                // Haftalık dosya adı sadece yıl ve ay
                 val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
                 "haftalik-${sdf.format(calendar.time)}"
             }
@@ -121,7 +118,8 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun fetchJsonFromGitHub(fileName: String, onResult: (StockAnalysis?) -> Unit) {
+
+    private fun fetchJsonFromGitHub(fileName: String, onResult: (StockAnalysisGit?) -> Unit) {
         val url = "https://raw.githubusercontent.com/hamzaKrdss/hisseler/main/$fileName.json"
         val request = Request.Builder().url(url).build()
 
@@ -136,7 +134,7 @@ class HomeFragment : Fragment() {
                 if (response.isSuccessful) {
                     response.body?.string()?.let { jsonString ->
                         try {
-                            val analysis = gson.fromJson(jsonString, StockAnalysis::class.java)
+                            val analysis = gson.fromJson(jsonString, StockAnalysisGit::class.java)
                             requireActivity().runOnUiThread {
                                 onResult(analysis)
                             }
@@ -159,16 +157,18 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun updateUIFromAnalysis(analysis: StockAnalysis) {
+    private fun updateUIFromAnalysis(analysis: StockAnalysisGit) {
         shareTask.text = "${analysis.analiz_tipi} (${analysis.analiz_tarihi})"
 
         val nameList = analysis.hisseler.map { it.hisse_adi }
         val currentList = analysis.hisseler.map { "${it.guncel_fiyat} ₺" }
-        val predictedList = analysis.hisseler.map { "${it.haftalik_tahmini_satis} ₺" }
-        val averageList = analysis.hisseler.map { "${it.haftalik_ortalama_satis} ₺" }
+        val predictedList = analysis.hisseler.map { it.tahmini_satis_fiyati?.let { v -> "$v ₺" } ?: "-" }
+        val averageList = analysis.hisseler.map { it.ortalama_satis_fiyati?.let { v -> "$v ₺" } ?: "-" }
 
         updateTable(nameList, currentList, predictedList, averageList)
     }
+
+
 
     private fun loadDailyTask() {
         val fileName = getFileName("gunluk")
@@ -181,6 +181,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
 
     private fun loadWeekTask() {
         val fileName = getFileName("haftalik")
