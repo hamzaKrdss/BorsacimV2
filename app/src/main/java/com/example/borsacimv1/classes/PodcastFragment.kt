@@ -42,14 +42,17 @@ class PodcastFragment : Fragment() {
     private val audioUrl: String
         get() {
             val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+            // Raw github link formatına dikkat et
             return "https://raw.githubusercontent.com/hamzaKrdss/gunlukpodcast/main/$today.mp3"
         }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_podcast, container, false)
+
 
         playPauseButton = view.findViewById(R.id.playPauseButton)
         seekBar = view.findViewById(R.id.seekBar)
@@ -102,6 +105,7 @@ class PodcastFragment : Fragment() {
             mediaPlayer = MediaPlayer().apply {
                 try {
                     setDataSource(audioUrl)
+                    setVolume(1.0f,1.0f)
                     setOnPreparedListener {
                         start()
                         playPauseButton.setImageResource(R.drawable.ic_pause)

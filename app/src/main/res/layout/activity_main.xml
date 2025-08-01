@@ -23,7 +23,7 @@
         app:itemIconTint="@color/nav_icon_color"
         app:itemTextColor="@color/nav_text_color"
         app:labelVisibilityMode="labeled"
-        app:elevation="10dp"
+        app:elevation="12dp"
         app:itemIconSize="29dp"
         app:itemRippleColor="@color/nav_ripple_color"
         app:layout_constraintBottom_toBottomOf="parent"
