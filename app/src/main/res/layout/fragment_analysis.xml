@@ -4,11 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="#393352">
 
     <LinearLayout
         android:id="@+id/searchContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="64dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -24,15 +24,17 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_gravity="center"
-            android:src="@drawable/logo_icon"/>
+            android:src="@drawable/logo_icon" />
 
-        <SearchView
+        <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
+            android:outlineAmbientShadowColor="@color/white"
             android:layout_gravity="center"
             android:background="@drawable/search_bg"
+            android:outlineSpotShadowColor="@color/white"
             android:iconifiedByDefault="false"
             android:queryHint="Hisse ara" />
 
@@ -41,7 +43,6 @@
             android:layout_height="64dp"
             android:src="@drawable/notif_icon"
             android:layout_gravity="center" />
-
 
     </LinearLayout>
 
@@ -83,6 +84,33 @@
             android:textSize="18sp"
             android:layout_marginTop="8dp" />
 
+        <TextView
+            android:id="@+id/stockChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Değişim"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/stockHigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Günlük Yüksek"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/stockLow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Günlük Düşük"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

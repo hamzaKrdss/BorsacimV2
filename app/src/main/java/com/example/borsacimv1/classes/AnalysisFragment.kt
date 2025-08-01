@@ -1,11 +1,13 @@
 package com.example.borsacimv1.classes
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
+import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,15 +20,19 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
 class AnalysisFragment : Fragment() {
 
-    private val API_KEY = "d268q9pr01qh25lmbgvgd268q9pr01qh25lmbh00" // Buraya kend4i anahtarını koy
+    private val API_KEY = "d268q9pr01qh25lmbgvgd268q9pr01qh25lmbh00" // Kendi API anahtarını buraya koy
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var stockDetailContainer: View
     private lateinit var stockName: TextView
     private lateinit var stockPrice: TextView
+    private lateinit var stockChange: TextView
+    private lateinit var stockHigh: TextView
+    private lateinit var stockLow: TextView
 
     private var searchJob: Job? = null
     private var adapter: StockAdapter? = null
@@ -42,10 +48,27 @@ class AnalysisFragment : Fragment() {
         stockDetailContainer = view.findViewById(R.id.stockDetailContainer)
         stockName = view.findViewById(R.id.stockName)
         stockPrice = view.findViewById(R.id.stockPrice)
+        stockChange = view.findViewById(R.id.stockChange)
+        stockHigh = view.findViewById(R.id.stockHigh)
+        stockLow = view.findViewById(R.id.stockLow)
+
+        // SearchView içindeki EditText'i bulup yazı rengini ve hint rengini ayarla
+        val searchEditText = findSearchEditText(searchView)
+        searchEditText?.setTextColor(Color.WHITE)
+        searchEditText?.setHintTextColor(Color.LTGRAY)
+
+        // SearchView'i aç, odaklanabilir ve tıklanabilir yap
+        searchView.isIconified = false
+        searchView.isFocusable = true
+        searchView.isFocusableInTouchMode = true
+        searchView.isClickable = true
+        searchView.requestFocus()
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Search işlemi
+        searchEditText?.setTextColor(Color.WHITE)
+        searchEditText?.setHintTextColor(Color.LTGRAY)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
@@ -65,6 +88,33 @@ class AnalysisFragment : Fragment() {
         })
 
         return view
+    }
+
+    private fun findSearchEditText(searchView: SearchView): EditText? {
+        // SearchView içindeki EditText'i bulmak için recursive fonksiyon
+        for (i in 0 until searchView.childCount) {
+            val child = searchView.getChildAt(i)
+            if (child is EditText) {
+                return child
+            }
+            if (child is ViewGroup) {
+                val editText = findEditTextInViewGroup(child)
+                if (editText != null) return editText
+            }
+        }
+        return null
+    }
+
+    private fun findEditTextInViewGroup(viewGroup: ViewGroup): EditText? {
+        for (i in 0 until viewGroup.childCount) {
+            val child = viewGroup.getChildAt(i)
+            if (child is EditText) return child
+            if (child is ViewGroup) {
+                val editText = findEditTextInViewGroup(child)
+                if (editText != null) return editText
+            }
+        }
+        return null
     }
 
     private fun filterStocksLocally(query: String) {
@@ -91,17 +141,37 @@ class AnalysisFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val quote = RetrofitClient.api.getQuote(symbol, API_KEY)
+
+                // Hesaplamalar
+                val change = quote.c - quote.pc
+                val changePercent = if (quote.pc != 0.0) (change / quote.pc) * 100 else 0.0
+                val changeText = String.format("%.2f (%.2f%%)", change, changePercent)
+
                 requireActivity().runOnUiThread {
                     stockDetailContainer.visibility = View.VISIBLE
                     stockName.text = "$symbol - $name"
                     stockPrice.text = "Fiyat: ${quote.c} $"
+                    stockChange.text = "Değişim: $changeText"
+                    stockHigh.text = "Günlük Yüksek: ${quote.h}"
+                    stockLow.text = "Günlük Düşük: ${quote.l}"
+
+                    // Değişim pozitifse yeşil, negatifse kırmızı yap
+                    stockChange.setTextColor(
+                        if (change >= 0) Color.GREEN else Color.RED
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                stockName.text = "$symbol - $name"
-                stockPrice.text = "Fiyat alınamadı"
-                stockDetailContainer.visibility = View.VISIBLE
+                requireActivity().runOnUiThread {
+                    stockDetailContainer.visibility = View.VISIBLE
+                    stockName.text = "$symbol - $name"
+                    stockPrice.text = "Fiyat alınamadı"
+                    stockChange.text = ""
+                    stockHigh.text = ""
+                    stockLow.text = ""
+                }
             }
         }
     }
+
 }
