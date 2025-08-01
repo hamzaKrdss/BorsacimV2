@@ -77,12 +77,6 @@ class HomeFragment : Fragment() {
         loadDailyTask()
         selectButton(dailyShare)
 
-        val searchView = view.findViewById<SearchView>(R.id.searchView)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?) = true
-            override fun onQueryTextChange(newText: String?) = true
-        })
-        searchView.clearFocus()
 
         return view
     }

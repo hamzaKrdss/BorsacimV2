@@ -8,48 +8,43 @@
     tools:context=".classes.HomeFragment">
 
 
-    <LinearLayout
-        android:id="@+id/content1"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="36dp"
-        android:orientation="horizontal"
-        android:background="@drawable/top_nav_menu"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/icon_img"
-            android:layout_width="64dp"
+        <LinearLayout
+            android:id="@+id/content1"
+            android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:layout_gravity="center"
-            android:src="@drawable/logo_icon"/>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="36dp"
+            android:orientation="horizontal"
+            android:background="@drawable/top_nav_menu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <SearchView
-            android:id="@+id/searchView"
-            android:layout_width="220dp"
-            android:layout_height="match_parent"
-            android:queryHint="Hisse ara"
-            android:layout_gravity="center"
-            android:background="@drawable/search_bg"
-            android:iconifiedByDefault="false"
-            android:focusable="false"
-            android:layout_margin="12dp"/>
+            <ImageView
+                android:id="@+id/icon_img"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center"
+                android:src="@drawable/logo_icon"/>
 
-        <ImageView
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:src="@drawable/notif_icon"
-            android:layout_gravity="center" />
+            <View
+                android:layout_width="250dp"
+                android:layout_height="0dp"
+                android:minWidth="1dp"></View>
 
-
-    </LinearLayout>
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/notif_icon"
+                android:layout_gravity="center" />
 
 
-    <HorizontalScrollView
+        </LinearLayout>
+
+
+
+        <HorizontalScrollView
         android:id="@+id/contentPanel"
         android:layout_width="match_parent"
         android:layout_height="62dp"

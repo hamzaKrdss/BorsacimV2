@@ -1,14 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#121212"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".classes.AnalysisFragment">
+    android:padding="16dp">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/searchContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/top_nav_menu">
 
-</FrameLayout>
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/logo_icon" />
+
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:queryHint="Hisse ara"
+            android:iconifiedByDefault="false"
+            android:background="@drawable/search_bg"
+            android:focusable="true" />
+
+        <ImageView
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:src="@drawable/notif_icon" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/stockRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/stockDetailContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/stockName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hisse Adı"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/stockPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fiyat"
+            android:textColor="#AAAAAA"
+            android:textSize="18sp"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
