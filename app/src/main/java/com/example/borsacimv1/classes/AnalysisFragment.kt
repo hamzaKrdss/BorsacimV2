@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class AnalysisFragment : Fragment() {
 
-    private val API_KEY = "BURAYA_FINNHUB_API_KEYİNİ_YAZ" // Buraya kendi anahtarını koy
+    private val API_KEY = "d268q9pr01qh25lmbgvgd268q9pr01qh25lmbh00" // Buraya kendi anahtarını koy
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
