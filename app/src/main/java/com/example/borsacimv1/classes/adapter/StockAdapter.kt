@@ -21,15 +21,13 @@ class StockAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(android.R.layout.simple_list_item_1, parent, false)
-        return StockViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        StockViewHolder(LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false))
 
     override fun getItemCount() = stocks.size
 
     override fun onBindViewHolder(holder: StockViewHolder, position: Int) {
-        holder.stockName.text = "${stocks[position].symbol} - ${stocks[position].description}"
+        val stock = stocks[position]
+        holder.stockName.text = "${stock.symbol} - ${stock.description}"
     }
 }

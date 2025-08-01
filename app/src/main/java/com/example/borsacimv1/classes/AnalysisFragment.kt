@@ -7,19 +7,20 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.lifecycle.lifecycleScope
 import com.example.borsacimv1.R
 import com.example.borsacimv1.classes.adapter.StockAdapter
 import com.example.borsacimv1.data.objects.RetrofitClient
+import com.example.borsacimv1.data.objects.local.GlobalStockList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AnalysisFragment : Fragment() {
 
-    private val API_KEY = "BURAYA_FINNHUB_API_KEYİNİ_YAZ"
+    private val API_KEY = "BURAYA_FINNHUB_API_KEYİNİ_YAZ" // Buraya kendi anahtarını koy
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
@@ -32,8 +33,8 @@ class AnalysisFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+        savedInstanceState: Bundle?
+    ): View {
         val view = inflater.inflate(R.layout.fragment_analysis, container, false)
 
         searchView = view.findViewById(R.id.searchView)
@@ -44,6 +45,7 @@ class AnalysisFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        // Search işlemi
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
@@ -54,10 +56,9 @@ class AnalysisFragment : Fragment() {
                     stockDetailContainer.visibility = View.GONE
                     return true
                 }
-                // Debounce arama (yarım saniye bekle)
                 searchJob = lifecycleScope.launch {
-                    delay(500)
-                    searchStocks(newText)
+                    delay(300) // debounce
+                    filterStocksLocally(newText)
                 }
                 return true
             }
@@ -66,25 +67,23 @@ class AnalysisFragment : Fragment() {
         return view
     }
 
-    private suspend fun searchStocks(query: String) {
-        try {
-            val response = RetrofitClient.api.searchSymbols(query, API_KEY)
-            val results = response.result
-            requireActivity().runOnUiThread {
-                if (results.isEmpty()) {
-                    recyclerView.visibility = View.GONE
-                } else {
-                    recyclerView.visibility = View.VISIBLE
-                    adapter = StockAdapter(results) { stock ->
-                        fetchStockPrice(stock.symbol, stock.description)
-                        recyclerView.visibility = View.GONE
-                    }
-                    recyclerView.adapter = adapter
-                }
-                stockDetailContainer.visibility = View.GONE
+    private fun filterStocksLocally(query: String) {
+        val filteredList = GlobalStockList.stocks.filter {
+            it.symbol.contains(query, ignoreCase = true) ||
+                    it.description.contains(query, ignoreCase = true)
+        }
+
+        if (filteredList.isEmpty()) {
+            recyclerView.visibility = View.GONE
+            stockDetailContainer.visibility = View.GONE
+        } else {
+            adapter = StockAdapter(filteredList) { stock ->
+                fetchStockPrice(stock.symbol, stock.description)
+                recyclerView.visibility = View.GONE
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+            recyclerView.adapter = adapter
+            recyclerView.visibility = View.VISIBLE
+            stockDetailContainer.visibility = View.GONE
         }
     }
 
@@ -95,12 +94,14 @@ class AnalysisFragment : Fragment() {
                 requireActivity().runOnUiThread {
                     stockDetailContainer.visibility = View.VISIBLE
                     stockName.text = "$symbol - $name"
-                    stockPrice.text = "Fiyat: ${quote.c} ₺"
+                    stockPrice.text = "Fiyat: ${quote.c} $"
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+                stockName.text = "$symbol - $name"
+                stockPrice.text = "Fiyat alınamadı"
+                stockDetailContainer.visibility = View.VISIBLE
             }
         }
     }
 }
-

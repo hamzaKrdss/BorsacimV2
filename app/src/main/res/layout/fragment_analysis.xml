@@ -1,55 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#121212"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#121212">
 
     <LinearLayout
         android:id="@+id/searchContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="36dp"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@drawable/top_nav_menu">
+        android:background="@drawable/top_nav_menu"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
+            android:id="@+id/icon_img"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/logo_icon" />
+            android:layout_gravity="center"
+            android:src="@drawable/logo_icon"/>
 
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:queryHint="Hisse ara"
-            android:iconifiedByDefault="false"
+            android:layout_gravity="center"
             android:background="@drawable/search_bg"
-            android:focusable="true" />
+            android:iconifiedByDefault="false"
+            android:queryHint="Hisse ara" />
 
         <ImageView
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:src="@drawable/notif_icon" />
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/notif_icon"
+            android:layout_gravity="center" />
+
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stockRecyclerView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/searchContainer"
+        app:layout_constraintBottom_toTopOf="@id/stockDetailContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/stockDetailContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/stockName"
@@ -70,4 +85,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
