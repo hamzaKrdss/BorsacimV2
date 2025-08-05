@@ -5,7 +5,7 @@
     tools:context=".classes.PodcastFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="@drawable/bg_gradient">
 
     <ImageView
         android:id="@+id/podcastCover"
